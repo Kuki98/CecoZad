@@ -5,13 +5,19 @@ path = "/var/www/html/"
 import cgi
 import cgitb
 cgitb.enable()
-print("Content-Type: text/html")    # HTML is following
-print()                             # blank line, end of headers
-
+print("Content-Type: text/html")   
+print()         
 form = cgi.FieldStorage()
 special_simbols = '!@#'
-comment = form.getvalue("comment", '')
 
+def get_url():
+    url = os.environ['HTTP_HOST']
+    uri = os.environ['REQUEST_URI']
+    return url + uri
+
+default_url = "localhost/cgi-bin/test_cgi.py"
+
+comment = form.getvalue("comment", '')
 def Comment_file():
     global comment 
     CommentsLog = open(path + "CommentsLog.txt", 'a+')
@@ -20,16 +26,39 @@ def Comment_file():
 
 if os.environ['REQUEST_METHOD'] == 'POST':
     Comment_file()
+
 def read_from_file():
     global special_simbols
     line_counter = 0
     CommentsLog = open(path + "CommentsLog.txt", 'r')
     for line in CommentsLog:
         line_counter += 1
-        print('<form action = "/cgi-bin/deleting_comment.py" method= "get">')
-        print(' <P> %s <button type="submit" name="delete_comment" value="%d">X</button><br></P>' % ((line.replace(special_simbols, '')), (int(line_counter)-1)))
-        print('</form>') 
-    CommentsLog.close()
+        if get_url() != default_url:
+            edit_line = form["edit_line"].value
+            if int(edit_line) == line_counter-1:
+                edit_form(line_counter)
+            else:
+                print('<form action = "/cgi-bin/deleting_comment.py" method= "get">')
+                print(' <P> %s '  % (line.replace(special_simbols, '')))
+                print('<button type="submit" name="delete_comment" value="%d">X</button><button formmethod="get" formaction="/cgi-bin/test_cgi.py?edit_line=%d" type="submit" name="edit_line" value=%d>Edit</button><br></P>' % 
+                ((line_counter-1),(line_counter-1),(line_counter-1)))
+                print('</form>')
+                
+        else:
+            print('<form action = "/cgi-bin/deleting_comment.py" method= "get">')
+            print(' <P> %s '  % (line.replace(special_simbols, '')))
+            print('<button type="submit" name="delete_comment" value="%d">X</button><button formmethod="get" formaction="/cgi-bin/test_cgi.py?edit_line=%d" type="submit" name="edit_line" value=%d>Edit</button><br></P>' % 
+            ((line_counter-1),(line_counter-1),(line_counter-1)))
+            print('</form>')
+            
+    CommentsLog.close() 
+
+def edit_form(button_value):
+    print('<form action="/cgi-bin/edit_comment.py" method="GET">')
+    print(' <input type= "text" name="new_comment" >')
+    print(' <button type= "submit" name="edit_comment_line" value=%d>Enter</button><br> ' % (button_value-1))
+    print('</form>')
+
 
 print('<html>')
 print('<head>')
@@ -40,7 +69,6 @@ print('<h1> Ceco Zadacha </h1>')
 print('<p> Ivan\'s image </p>')
 print('<div id = "ImageContainer">')
 print(' <img src= "/DSC_0213.JPG" />')
-#print('<p> %d </p>' % int(delete_comment))
 print('</div>')
 print('<div id = "CommentContainer">')
 print(' <div id = "CommentShow" >')
