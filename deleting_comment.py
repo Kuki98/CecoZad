@@ -14,6 +14,8 @@ if os.environ['HTTP_REFERER'] == 'http://localhost/cgi-bin/test_cgi.py':
     filename = 'CommentsLog.txt'
 elif os.environ['HTTP_REFERER'] == 'http://localhost/cgi-bin/pic2.py':
     filename = 'CommentsLogPic2.txt'
+elif os.environ['HTTP_REFERER'] == ('http://localhost/cgi-bin/uploadfile.py'):
+    filename = 'CommentsLogPic3.txt'
 
 def deleting_comment(filename):  
     words = []

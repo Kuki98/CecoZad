@@ -17,7 +17,9 @@ if os.environ['HTTP_REFERER'] == ('http://localhost/cgi-bin/test_cgi.py?edit_lin
 elif os.environ['HTTP_REFERER'] == ('http://localhost/cgi-bin/pic2.py?edit_line=%s' % edit_comment_line):
     url_to_go_back = 'http://localhost/cgi-bin/pic2.py'
     filename = 'CommentsLogPic2.txt'
-
+elif os.environ['HTTP_REFERER'] == ('http://localhost/cgi-bin/uploadfile.py?edit_line=%s' % edit_comment_line):
+	url_to_go_back = 'http://localhost/cgi-bin/uploadfile.py'
+	filename = 'CommentsLogPic3.txt'
 def edit_comment(filename):
 	words = []
 	first_file = open(path + filename, 'r')
