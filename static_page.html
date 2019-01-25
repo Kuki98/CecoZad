@@ -1,0 +1,26 @@
+<!Doctype html>
+<head>
+	<link rel = "stylesheet" href = "/style.css" style = "text/css">
+</head>
+<body>
+	<h1>Ceco Zadacha</h1>
+	<p>Picture 1</p>
+	<div id = "ImageContainer">
+		<img src= "/DSC_0213.JPG" />
+	</div>
+	<div id = "CommentContainer">
+		<div id = "CommentShow" >
+			{% block content %}
+
+			{% endblock %}	
+		</div>
+		<div id = "CommentEnter">
+		<form action= "/cgi-bin/test_cgi.py" method= "post">
+			<P>Comments:</P>
+			<input type = "text" name= "comment" id="comment"/><br><br>
+			<input type = "submit" value="Submit">
+		</form>
+		</div>
+	</div>
+</body>
+</html>
